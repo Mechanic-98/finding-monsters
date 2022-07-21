@@ -1,6 +1,8 @@
 import { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import CardList from './components/card-list/card-list.component';
+import SearchBar from './components/search-bar/search-bar.component';
 
 // function App() {
 //   return (
@@ -26,32 +28,48 @@ import './App.css';
 class App extends Component {
 	constructor() {
 		super();
+
 		this.state = {
-			name: 'Abhishek',
+			monsters: [], // initial state
+			searchField: '',
 		};
 	}
+
+	componentDidMount() {
+		fetch('https://jsonplaceholder.typicode.com/users')
+			.then((response) => response.json())
+			.then((monsters) => {
+				this.setState(() => {
+					return { monsters: monsters };
+				});
+			});
+	}
+
+	// Since this is a class function (method), it gets initialised only once
+	onSearchStringChange = (event) => {
+		const searchField = event.target.value.toLowerCase();
+
+		this.setState(() => {
+			return { searchField };
+		});
+	};
+
 	render() {
+		const { monsters, searchField } = this.state; // Destructuring
+		const { onSearchStringChange } = this; // Destructuring
+
+		const FilteredMonsters = monsters.filter((monster) => {
+			return monster.name.toLowerCase().includes(searchField);
+		});
+
 		return (
 			<div className="App">
-				<header className="App-header">
-					<img src={logo} className="App-logo" alt="logo" />
-					<p>Hi {this.state.name}</p>
-					<button
-						onClick={() => {
-							this.setState(
-								() => {
-									// shallow merge
-									return { name: 'Ojus' };
-								},
-								() => {
-									console.log(this.state.name);
-								}
-							);
-						}}
-					>
-						Change name
-					</button>
-				</header>
+				<SearchBar
+					onChangeHandler={onSearchStringChange}
+					placeholder="Search Monsters"
+					className="Search-bar"
+				/>
+				<CardList monsters={FilteredMonsters} />
 			</div>
 		);
 	}
