@@ -1,17 +1,14 @@
-import { Component } from 'react';
+import './search-bar.styles.css';
 
-class SearchBar extends Component {
-	render() {
-		const { onChangeHandler, placeholder, className } = this.props;
-		return (
-			<input
-				className={className}
-				type="search"
-				placeholder={placeholder}
-				onChange={onChangeHandler}
-			/>
-		);
-	}
-}
+const SearchBar = ({ onChangeHandler, placeholder, className }) => {
+	return (
+		<input
+			className={`search-bar ${className}`} // search-bar is name for general class and className is for exact instance
+			type="search"
+			placeholder={placeholder}
+			onChange={onChangeHandler}
+		/>
+	);
+};
 
 export default SearchBar;
